@@ -7,8 +7,8 @@ import (
 )
 
 type Config struct {
-	Server  string
-	Databse string
+	Server   string
+	Database string
 }
 
 func (c *Config) Read() {
