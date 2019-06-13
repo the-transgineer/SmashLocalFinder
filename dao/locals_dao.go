@@ -2,6 +2,7 @@ package dao
 
 import (
 	. "SmashLocalFinder/models"
+	"fmt"
 	"log"
 
 	mgo "gopkg.in/mgo.v2"
@@ -24,6 +25,7 @@ func (l *LocalsDAO) Connect() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println("Connected")
 	db = session.DB(l.Database)
 }
 
@@ -40,6 +42,7 @@ func (l *LocalsDAO) FindById(id string) (Local, error) {
 
 //Insert inserts new database object
 func (l *LocalsDAO) Insert(local Local) error {
+	fmt.Println(local)
 	err := db.C(COLLECTION).Insert(&local)
 	return err
 }
