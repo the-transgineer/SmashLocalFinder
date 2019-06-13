@@ -38,6 +38,7 @@ func (l *LocalsDAO) FindById(id string) (Local, error) {
 	return local, err
 }
 
+//Insert inserts new database object
 func (l *LocalsDAO) Insert(local Local) error {
 	err := db.C(COLLECTION).Insert(&local)
 	return err
