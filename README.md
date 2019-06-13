@@ -1,4 +1,4 @@
-#Smash Local Finder
+# Smash Local Finder
 
 backend for an upcoming smash project I am working on
 
