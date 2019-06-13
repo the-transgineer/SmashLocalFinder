@@ -5,7 +5,6 @@ import (
 	. "SmashLocalFinder/dao"
 	. "SmashLocalFinder/models"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -16,19 +15,28 @@ import (
 var dao = LocalsDAO{}
 var config = Config{}
 
+//AllLocals retuns a list of all Smash Ultimate Locals
 func AllLocals(w http.ResponseWriter, r *http.Request) {
 	locals, err := dao.FindAll()
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	respondWithJson(w, http.StatusOK, locals)
+	respondWithJSON(w, http.StatusOK, locals)
 }
 
+//FindLocal Returns a single local based on an ID
 func FindLocal(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "not implemented yet !")
+	params := mux.Vars(r)
+	local, err := dao.FindById(params["id"])
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid ID")
+		return
+	}
+	respondWithJSON(w, http.StatusOK, local)
 }
 
+//CreateLocal creates a new Local in the DB
 func CreateLocal(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	var local Local
@@ -41,22 +49,42 @@ func CreateLocal(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
-	respondWithJson(w, http.StatusCreated, local)
+	respondWithJSON(w, http.StatusCreated, local)
 }
 
+//UpdateLocal updates existing Local
 func UpdateLocal(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "not implemented yet !")
+	defer r.Body.Close()
+	var local Local
+	if err := json.NewDecoder(r.Body).Decode(&local); err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
+		return
+	}
+	respondWithJSON(w, http.StatusOK, map[string]string{"results": "success"})
 }
 
+//DeleteLocal deletes local by ID
 func DeleteLocal(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "not implemented yet !")
+	defer r.Body.Close()
+	var local Local
+	if err := json.NewDecoder(r.Body).Decode(&local); err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid payload")
+		return
+	}
+	if err := dao.Delete(local); err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
 }
 
+//respondWithError is a helper function to send an error
 func respondWithError(w http.ResponseWriter, code int, msg string) {
-	respondWithJson(w, code, map[string]string{"error": msg})
+	respondWithJSON(w, code, map[string]string{"error": msg})
 }
 
-func respondWithJson(w http.ResponseWriter, code int, payload interface{}) {
+//respondWithJSON is a helper functino to send JSON
+func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	response, _ := json.Marshal(payload)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
