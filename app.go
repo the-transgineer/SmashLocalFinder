@@ -66,7 +66,7 @@ func respondWithJson(w http.ResponseWriter, code int, payload interface{}) {
 func init() {
 	config.Read()
 	dao.Server = config.Server
-	dao.Database = config.Databse
+	dao.Database = config.Database
 	dao.Connect()
 }
 
