@@ -4,20 +4,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"time"
 
 	"github.com/gorilla/mux"
-	"gopkg.in/mgo.v2/bson"
 )
-
-type Local struct {
-	ID        bson.ObjectId `bson:"_id" json:"id"`
-	Name      string        `bson:"name" json:name`
-	Day       string        `bson:"day" json:"day"`
-	Time      time.Time     `bson:"time" json:"time"`
-	Location  string        `bson:"location" json:"location"`
-	Organizer string        `bson:"orgranizer" json:"organizer"`
-}
 
 func AllLocals(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "not implemented yet !")
