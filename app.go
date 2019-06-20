@@ -5,6 +5,7 @@ import (
 	. "SmashLocalFinder/dao"
 	. "SmashLocalFinder/models"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -34,6 +35,17 @@ func FindLocal(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	respondWithJSON(w, http.StatusOK, local)
+}
+
+//FindLocalsByRegion returns all locals in a region
+func FindLocalsByRegion(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	locals, err := dao.FindByRegion(params["region"])
+	if err != nil {
+		return
+	}
+	respondWithJSON(w, http.StatusOK, locals)
+
 }
 
 //CreateLocal creates a new Local in the DB
@@ -66,6 +78,7 @@ func UpdateLocal(w http.ResponseWriter, r *http.Request) {
 //DeleteLocal deletes local by ID
 func DeleteLocal(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
+	fmt.Println(r.Body)
 	var local Local
 	if err := json.NewDecoder(r.Body).Decode(&local); err != nil {
 		respondWithError(w, http.StatusBadRequest, "Invalid payload")
@@ -105,6 +118,7 @@ func main() {
 	r.HandleFunc("/locals", UpdateLocal).Methods("PUT")
 	r.HandleFunc("/locals", DeleteLocal).Methods("DELETE")
 	r.HandleFunc("/locals/{id}", FindLocal).Methods("GET")
+	r.HandleFunc("/locals/regions/{region}", FindLocalsByRegion).Methods("GET")
 	if err := http.ListenAndServe(":3000", r); err != nil {
 		log.Fatal(err)
 	}
