@@ -1,16 +1,12 @@
 import React from "react";
 import {BrowserRouter, Route} from "react-router-dom";
 import Regions from "../../Routes/Regions";
-
-const RegionRoute = ({match}) => {
-    console.log(match.params.region);
-    return <div></div>
-}
+import Region from "../../Routes/Region";
 
 const Router = () => (
     <BrowserRouter>
       <Route component={Regions} exact path="/regions"/>
-      <Route component={RegionRoute} path="/regions/:region" />
+      <Route component={Region} path="/regions/:region" />
     </BrowserRouter>
 );
 
