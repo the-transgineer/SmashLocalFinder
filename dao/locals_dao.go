@@ -1,9 +1,10 @@
 package dao
 
 import (
-	. "SmashLocalFinder/models"
 	"fmt"
 	"log"
+
+	. "github.com/the-transgineer/SmashLocalFinder/models"
 
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"

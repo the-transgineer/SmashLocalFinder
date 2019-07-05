@@ -1,13 +1,14 @@
 package main
 
 import (
-	. "SmashLocalFinder/config"
-	. "SmashLocalFinder/dao"
-	. "SmashLocalFinder/models"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+
+	. "github.com/the-transgineer/SmashLocalFinder/config"
+	. "github.com/the-transgineer/SmashLocalFinder/dao"
+	. "github.com/the-transgineer/SmashLocalFinder/models"
 
 	"github.com/gorilla/mux"
 	"gopkg.in/mgo.v2/bson"
@@ -16,8 +17,14 @@ import (
 var dao = LocalsDAO{}
 var config = Config{}
 
+//enableCors enables CORS
+func enableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+}
+
 //AllLocals retuns a list of all Smash Ultimate Locals
 func AllLocals(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	locals, err := dao.FindAll()
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
@@ -39,6 +46,7 @@ func FindLocal(w http.ResponseWriter, r *http.Request) {
 
 //FindLocalsByRegion returns all locals in a region
 func FindLocalsByRegion(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	params := mux.Vars(r)
 	locals, err := dao.FindByRegion(params["region"])
 	if err != nil {
@@ -50,6 +58,7 @@ func FindLocalsByRegion(w http.ResponseWriter, r *http.Request) {
 
 //CreateLocal creates a new Local in the DB
 func CreateLocal(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	defer r.Body.Close()
 	var local Local
 	if err := json.NewDecoder(r.Body).Decode(&local); err != nil {
@@ -66,6 +75,7 @@ func CreateLocal(w http.ResponseWriter, r *http.Request) {
 
 //UpdateLocal updates existing Local
 func UpdateLocal(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	defer r.Body.Close()
 	var local Local
 	if err := json.NewDecoder(r.Body).Decode(&local); err != nil {
@@ -77,6 +87,7 @@ func UpdateLocal(w http.ResponseWriter, r *http.Request) {
 
 //DeleteLocal deletes local by ID
 func DeleteLocal(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	defer r.Body.Close()
 	fmt.Println(r.Body)
 	var local Local
